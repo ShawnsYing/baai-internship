@@ -185,11 +185,11 @@ def main():
         description="Fetch actionable review comments from open PRs"
     )
     parser.add_argument(
-        "--repo", default="flagos-ai/FlagGems-Experimental",
+        "--repo", default="flagos-ai/FlagGems",
         help="Upstream repo (owner/name)"
     )
     parser.add_argument(
-        "--fork-owner", default="Yukun-Cui",
+        "--fork-owner", default="ShawnsYing",
         help="Fork owner username on GitHub"
     )
     parser.add_argument(

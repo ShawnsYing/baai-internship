@@ -187,7 +187,7 @@ def strip_ai_signature(worktree_path: str, operator: str):
         logger.warning(f"[SIGN] Error stripping AI signature: {e}")
 
 
-def sort_and_amend_commit(worktree_path: str, operator: str, base_branch: str = "infra-ci"):
+def sort_and_amend_commit(worktree_path: str, operator: str, base_branch: str = "master"):
     """Sort operator registrations and amend the commit if changes were needed.
 
     Uses sort_registrations.py (colocated in this directory). Also sorts any
@@ -317,7 +317,7 @@ def render_template(template_path: str, variables: dict) -> str:
 # ---------------------------------------------------------------------------
 
 def create_worktree(
-    flaggems_dir: str, operator: str, branch_prefix: str = "pr/", base_branch: str = "infra-ci"
+    flaggems_dir: str, operator: str, branch_prefix: str = "pr/", base_branch: str = "master"
 ) -> tuple[str, str]:
     """Create a git worktree for an operator. Returns (worktree_path, branch_name).
 
@@ -911,7 +911,7 @@ def run(args):
     poll_interval = config.get("poll_interval", 10)
     max_concurrency = config.get("max_concurrency", 0) or 0
     python_path = config.get("python_path", sys.executable)
-    base_branch = config.get("base_branch", "infra-ci")
+    base_branch = config.get("base_branch", "master")
     branch_prefix = config.get("branch_prefix", "pr/")
     dry_run = getattr(args, "dry_run", False)
 
@@ -990,7 +990,7 @@ def run(args):
             if "does not resolve" in fetch_result.stderr or "Unknown remote" in fetch_result.stderr:
                 logger.warning(
                     "upstream remote not found. Add it with:\n"
-                    "  git remote add upstream https://github.com/flagos-ai/FlagGems-Experimental.git\n"
+                    "  git remote add upstream https://github.com/flagos-ai/FlagGems.git\n"
                     "Continuing with local base branch (run with --skip-fetch to silence)."
                 )
             else:

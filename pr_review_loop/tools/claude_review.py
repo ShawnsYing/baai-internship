@@ -29,7 +29,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Claude review gate.")
     parser.add_argument("--task-dir", required=True)
     parser.add_argument("--worktree", required=True)
-    parser.add_argument("--cwd", default="/root/FlagGems")
+    parser.add_argument("--cwd", default="/home/shuang/FlagGems")
     parser.add_argument("--timeout", type=int, default=900)
     parser.add_argument(
         "--allow-read-tools",

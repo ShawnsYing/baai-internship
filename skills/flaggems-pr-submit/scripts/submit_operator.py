@@ -38,7 +38,7 @@ AI_ATTRIBUTION_RE = re.compile(
 )
 
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_REPO = "/root/FlagGems"
+DEFAULT_REPO = "/home/shuang/FlagGems"
 
 # 当前正在提交的算子名（用于 fatal 中记录事件）
 _current_op = None

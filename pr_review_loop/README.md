@@ -215,7 +215,7 @@ python3 run_once.py --fetch --days 30 --limit-prs 1 --dry-run
 
 ```bash
 # 1) 抓取 review 报告（fetch 脚本按仓库/作者/时间过滤，不支持按单个 PR 号过滤）
-python3 github_reviews/fetch_reviews.py --repo flagos-ai/FlagGems-Experimental --open --unreplied \
+python3 github_reviews/fetch_reviews.py --repo flagos-ai/FlagGems --open --unreplied \
   --output records/latest_reviews.md
 # 2) 用生成的报告跑 loop（可在报告里删掉不想处理的 PR 段落）
 python3 run_once.py --report records/latest_reviews.md --dry-run
@@ -241,7 +241,7 @@ python3 run_once.py \
   --fetch --days 7 --limit-prs 1 \
   --no-dry-run \
   --execute-fixers \
-  --fixer-command 'python3 tools/claude_fixer.py --worktree /root/pr_worktrees/pr{pr_num} --handoff {handoff} --task-dir {task_dir} --timeout 900' \
+  --fixer-command 'python3 tools/claude_fixer.py --worktree /home/shuang/pr_worktrees/pr{pr_num} --handoff {handoff} --task-dir {task_dir} --timeout 900' \
   --execute-local-validation \
   --execute-claude-review \
   --execute-audit \
@@ -249,7 +249,7 @@ python3 run_once.py \
 ```
 
 > 注意：`{pr_num}`、`{task_dir}` 只在**单任务 shard**时有效。若一个 PR 有多条 review，用 `--shard-scope task` 让每条 review 单独成 shard，占位符才可用。
-> 跑完后手动去 `/root/pr_worktrees/pr<N>` 看 `git diff`，满意再进场景 5 推送。
+> 跑完后手动去 `/home/shuang/pr_worktrees/pr<N>` 看 `git diff`，满意再进场景 5 推送。
 
 ---
 
@@ -282,7 +282,7 @@ python3 run_once.py \
   --fetch --days 7 --limit-prs 1 \
   --no-dry-run \
   --execute-fixers \
-  --fixer-command 'python3 tools/claude_fixer.py --worktree /root/pr_worktrees/pr{pr_num} --handoff {handoff} --task-dir {task_dir} --timeout 900' \
+  --fixer-command 'python3 tools/claude_fixer.py --worktree /home/shuang/pr_worktrees/pr{pr_num} --handoff {handoff} --task-dir {task_dir} --timeout 900' \
   --execute-local-validation \
   --execute-claude-review \
   --execute-audit \

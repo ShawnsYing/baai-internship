@@ -23,14 +23,14 @@ FlagGems 算子批量提 PR 工具。读取算子列表，为每个算子创建�
 
 ```bash
 MAX_PARALLEL=1                                                   # 并行数（每个 job 独占一块 GPU）
-OP_LIST="/root/baai-internship/batch_pr_submit/ops_list.txt"
-REPO_DIR="/root/FlagGems"                                        # 源仓库（并行期间不被修改）
+OP_LIST="/home/shuang/baai-internship/batch_pr_submit/ops_list.txt"
+REPO_DIR="/home/shuang/FlagGems"                                        # 源仓库（并行期间不被修改）
 UPSTREAM_REMOTE="upstream"                                       # 本地 upstream remote 名
 BASE_BRANCH="infra-ci"                                           # 上游 base 分支：experimental=infra-ci，mainline=master
-FORK_REPO="Yukun-Cui/FlagGems-Experimental"                      # push 用的 fork（owner/name），worktree 里重写 origin
-SCRIPTS_DIR="/root/baai-internship/skills/flaggems-pr-submit/scripts"
+FORK_REPO="ShawnsYing/FlagGems"                                  # push 用的 fork（owner/name），worktree 里重写 origin
+SCRIPTS_DIR="/home/shuang/baai-internship/skills/flaggems-pr-submit/scripts"
 GH_TOKEN="${GH_TOKEN:-}"                                         # 启动前 export
-LOG_DIR="/root/baai-internship/batch_pr_submit/logs"
+LOG_DIR="/home/shuang/baai-internship/batch_pr_submit/logs"
 WORKTREE_BASE_DIR="/tmp/flaggems_worktrees"                      # 每个算子的临时 worktree
 ```
 
@@ -60,7 +60,7 @@ Python 版（带 GPU 自动调度，`--ops-file` 必填）：
 ```bash
 export GH_TOKEN=<your_token>
 python3 batch_pr_submit.py --ops-file ops_list.txt \
-  --repo-dir /root/FlagGems --max-workers 4 --gpus auto        # 默认 experimental：--base infra-ci
+  --repo-dir /home/shuang/FlagGems --max-workers 4 --gpus auto        # 默认 experimental：--base infra-ci
 python3 batch_pr_submit.py --ops-file ops_list.txt \
   --base master --upstream-remote upstream                      # mainline：提到上游 master
 python3 batch_pr_submit.py --ops-file ops_list.txt --dry-run    # 预演

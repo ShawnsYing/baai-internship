@@ -8,14 +8,14 @@
 无法自动处理的冲突会报告路径，需要手动解决后再 `git rebase --continue`。
 
 用法：
-    # 在 PR 分支上运行（默认 base 为 infra-ci，fork remote 为 origin）
-    python rebase_and_resolve.py --repo-dir /root/FlagGems
+    # 在 PR 分支上运行（默认 base 为 master，fork remote 为 fork-shuang）
+    python rebase_and_resolve.py --repo-dir /home/shuang/FlagGems
 
     # 预览模式（不实际 push）
-    python rebase_and_resolve.py --repo-dir /root/FlagGems --no-push
+    python rebase_and_resolve.py --repo-dir /home/shuang/FlagGems --no-push
 
     # 指定远程名称 / base 分支
-    python rebase_and_resolve.py --repo-dir /root/FlagGems --upstream upstream --fork origin --base infra-ci
+    python rebase_and_resolve.py --repo-dir /home/shuang/FlagGems --upstream upstream --fork fork-shuang --base master
 
 流程：
     1. git fetch upstream
@@ -137,12 +137,12 @@ def main():
         help="上游远程名称 (默认: upstream)",
     )
     parser.add_argument(
-        "--fork", default="origin",
+        "--fork", default="fork-shuang",
         help="我们 fork 的远程名称 (默认: origin)",
     )
     parser.add_argument(
-        "--base", default="infra-ci",
-        help="上游 base 分支 (默认: infra-ci)",
+        "--base", default="master",
+        help="上游 base 分支 (默认: master)",
     )
     parser.add_argument(
         "--no-push", action="store_true",

@@ -498,7 +498,7 @@ def main():
     p.add_argument("op_name", help="Operator name (e.g., special_bessel_j1)")
     p.add_argument(
         "--repo",
-        default="/root/FlagGems",
+        default="/home/shuang/FlagGems",
         help="Path to FlagGems repo",
     )
     p.add_argument("--nvidia-log", help="Path to Nvidia benchmark log file")

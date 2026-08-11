@@ -27,7 +27,7 @@ from update_pr_performance_from_ci import (
 )
 
 
-DEFAULT_REPORT_DIR = "/root/baai-internship/ci_performance_update/reports"
+DEFAULT_REPORT_DIR = "/home/shuang/baai-internship/ci_performance_update/reports"
 DEFAULT_SPEEDUP_THRESHOLD = 0.8
 H20_RE = re.compile(r"\bNVIDIA H20\b|Nvidia \(H20\)", re.IGNORECASE)
 CI_RE = re.compile(r"\bNVIDIA CI\b|Nvidia \(CI\)|python-op CI", re.IGNORECASE)

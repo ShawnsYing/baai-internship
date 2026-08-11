@@ -1149,7 +1149,7 @@ class OperatorChecker:
             return
 
         anti_hack_path = os.environ.get(
-            "ANTI_HACK_SCRIPT", "/root/baai-internship/anti_hack/anti_hack.py"
+            "ANTI_HACK_SCRIPT", "/home/shuang/baai-internship/anti_hack/anti_hack.py"
         )
         if not os.path.isfile(anti_hack_path):
             warn(f"anti_hack.py 不存在: {anti_hack_path}，跳过")
@@ -1188,7 +1188,7 @@ class OperatorChecker:
             return
 
         anti_hack_path = os.environ.get(
-            "ANTI_HACK_SCRIPT", "/root/baai-internship/anti_hack/anti_hack.py"
+            "ANTI_HACK_SCRIPT", "/home/shuang/baai-internship/anti_hack/anti_hack.py"
         )
         if not os.path.isfile(anti_hack_path):
             warn(f"anti_hack.py 不存在: {anti_hack_path}，跳过 Layer 2")
@@ -2189,7 +2189,7 @@ def main():
     parser.add_argument("operator", help="算子名称（如 special_erfcx, _cholesky_solve_helper）")
     parser.add_argument(
         "--repo-dir",
-        default=os.environ.get("FLAGGEMS_REPO", "/root/FlagGems"),
+        default=os.environ.get("FLAGGEMS_REPO", "/home/shuang/FlagGems"),
         help="FlagGems 仓库路径",
     )
     parser.add_argument("--list-files", action="store_true", help="仅输出涉及的文件列表")

@@ -18,9 +18,9 @@ import subprocess
 import sys
 import os
 
-REPO_DIR = os.environ.get("FLAGGEMS_REPO", "/root/FlagGems")
-BASE = os.environ.get("FLAGGEMS_BASE", "infra-ci")
-PUSH_REMOTE = os.environ.get("FLAGGEMS_PUSH_REMOTE", "origin")
+REPO_DIR = os.environ.get("FLAGGEMS_REPO", "/home/shuang/FlagGems")
+BASE = os.environ.get("FLAGGEMS_BASE", "master")
+PUSH_REMOTE = os.environ.get("FLAGGEMS_PUSH_REMOTE", "fork-shuang")
 BRANCH_PREFIX = "pr/"
 
 

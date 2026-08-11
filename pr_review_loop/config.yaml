@@ -1,12 +1,12 @@
 github:
-  username: "Yukun-Cui"
+  username: "ShawnsYing"
   token_env: "GITHUB_TOKEN"
-  repo: "flagos-ai/FlagGems-Experimental"
+  repo: "flagos-ai/FlagGems"
 
 paths:
-  review_fetcher_dir: "/root/baai-internship/pr_review_loop/github_reviews"
-  deepseek_workflow_dir: "/root/baai-internship/pr_review_loop/deepseek-workflow"
-  records_root: "/root/baai-internship/pr_review_loop/records"
+  review_fetcher_dir: "/home/shuang/baai-internship/pr_review_loop/github_reviews"
+  deepseek_workflow_dir: "/home/shuang/baai-internship/pr_review_loop/deepseek-workflow"
+  records_root: "/home/shuang/baai-internship/pr_review_loop/records"
 
 workflow:
   dry_run: true
@@ -20,7 +20,7 @@ workflow:
   ci_timeout: 3600
   ci_poll_interval: 30
   generate_ci_fix_tasks: true
-  worktree_root: "/root/pr_worktrees"
+  worktree_root: "/home/shuang/pr_worktrees"
   worktree_template: ""
   fixer_parallelism: 3
   max_reviews_per_fixer: 2
@@ -32,7 +32,7 @@ commands:
   # installed and tested in your environment.
   fixer_command: ""
   validation_command: ""
-  claude_review_command: "python3 /root/baai-internship/pr_review_loop/tools/claude_review.py --task-dir {task_dir} --worktree /root/pr_worktrees/pr{pr_num} --cwd /root/FlagGems --timeout 900"
-  audit_command: "python3 /root/baai-internship/pr_review_loop/tools/codex_audit.py --task-dir {task_dir} --worktree /root/pr_worktrees/pr{pr_num}"
-  commit_command: "python3 /root/baai-internship/pr_review_loop/tools/commit_approved_prs.py --run-dir {run_dir} --worktree-root /root/pr_worktrees"
-  push_command: "python3 /root/baai-internship/pr_review_loop/tools/push_approved_prs.py --run-dir {run_dir} --repo flagos-ai/FlagGems-Experimental --remote fork --worktree-root /root/pr_worktrees"
+  claude_review_command: "python3 /home/shuang/baai-internship/pr_review_loop/tools/claude_review.py --task-dir {task_dir} --worktree /home/shuang/pr_worktrees/pr{pr_num} --cwd /home/shuang/FlagGems --timeout 900"
+  audit_command: "python3 /home/shuang/baai-internship/pr_review_loop/tools/codex_audit.py --task-dir {task_dir} --worktree /home/shuang/pr_worktrees/pr{pr_num}"
+  commit_command: "python3 /home/shuang/baai-internship/pr_review_loop/tools/commit_approved_prs.py --run-dir {run_dir} --worktree-root /home/shuang/pr_worktrees"
+  push_command: "python3 /home/shuang/baai-internship/pr_review_loop/tools/push_approved_prs.py --run-dir {run_dir} --repo flagos-ai/FlagGems --remote fork-shuang --worktree-root /home/shuang/pr_worktrees"

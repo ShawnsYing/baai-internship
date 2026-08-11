@@ -24,7 +24,7 @@ import yaml
 from name_plan import build_name_plan, write_name_plan
 from paths import id_to_mark, resolve_op_names
 
-DEFAULT_REPO = "/root/FlagGems"
+DEFAULT_REPO = "/home/shuang/FlagGems"
 COPYRIGHT_LICENSE_HEADER = """# Copyright 2026, The FlagOS Contributors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");

@@ -3,7 +3,7 @@
 ## Phase 0: Name Lookup
 
 ```bash
-python /root/baai-internship/skills/flaggems-pr-submit/scripts/operator_registry.py lookup <op>
+python /home/shuang/.claude/skills/flaggems-pr-submit/scripts/operator_registry.py lookup <op>
 ```
 
 输出示例：
@@ -22,21 +22,21 @@ PR链接:     (未提交)
 ## Phase 1: Preparation
 
 ```bash
-cd /root/FlagGems
-git checkout -b pr/<op> upstream/infra-ci
+cd /home/shuang/FlagGems
+git checkout -b pr/<op> upstream/master
 ```
 
 确认不存在于上游：
 ```bash
-git show upstream/infra-ci:src/flag_gems/ops/<op>.py  # should fail
+git show upstream/master:src/flag_gems/ops/<op>.py  # should fail
 ```
 
 ## Phase 1.5: Benchmark & Data
 
 ```bash
 # 完整模式：运行 benchmark + 查国产卡（submit_operator.py 自动执行，通常不需手动调用）
-CUDA_VISIBLE_DEVICES=<N> python /root/baai-internship/skills/flaggems-pr-submit/scripts/gen_pr_description.py <op> \
-  --repo /root/FlagGems
+CUDA_VISIBLE_DEVICES=<N> python /home/shuang/.claude/skills/flaggems-pr-submit/scripts/gen_pr_description.py <op> \
+  --repo /home/shuang/FlagGems
 
 # 从 CI 日志 pipe（调试用）
 python -m pytest benchmark/test_<op>.py --level core -s | python .../gen_pr_description.py <op> --nvidia-stdin
@@ -94,7 +94,7 @@ def test_<op>(shape, dtype):
 - `gems_assert_close` 只支持 atol，不支持 rtol
 - 禁止 print()
 
-**追加模式**：提取前先查上游是否已有同名文件（`git show upstream/infra-ci:tests/test_<op>.py`）。如已存在（如 `bernoulli_` 占用 `test_bernoulli.py`），保留原文件全部代码，新测试追加到末尾，shapes/dtypes 与同文件已有测试一致，`input_fn` 用描述性命名（如 `bernoulli_input_fn`）。
+**追加模式**：提取前先查上游是否已有同名文件（`git show upstream/master:tests/test_<op>.py`）。如已存在（如 `bernoulli_` 占用 `test_bernoulli.py`），保留原文件全部代码，新测试追加到末尾，shapes/dtypes 与同文件已有测试一致，`input_fn` 用描述性命名（如 `bernoulli_input_fn`）。
 
 ### 2.5 Benchmark: `benchmark/test_<op>.py`
 
@@ -145,7 +145,7 @@ def test_<op>():
 
 ```bash
 # Phase 3
-python /root/baai-internship/skills/flaggems-pr-submit/scripts/check_operator.py <op> --repo-dir /root/FlagGems
+python /home/shuang/.claude/skills/flaggems-pr-submit/scripts/check_operator.py <op> --repo-dir /home/shuang/FlagGems
 
 # Phase 4
 pre-commit run --files src/flag_gems/ops/<op>.py tests/test_<op>.py benchmark/test_<op>.py \
@@ -158,13 +158,13 @@ pre-commit run --files src/flag_gems/ops/<op>.py tests/test_<op>.py benchmark/te
 - ❌ **禁止 `git add -A` 或 `git add .`** — 687 worktrees 会被误加
 - ❌ **禁止 Co-Authored-By** — CLA CI 会失败
 - ❌ **禁止 cherry-pick** — worktree 代码结构与上游不同，容易带入旧基线并造成 PR merge conflict
-- ❌ **禁止 rebase** — 分支已基于 upstream/infra-ci 创建
-- 只 stage 6 个文件，分支名 `pr/<op>`，push 到 `origin`（指向 fork `Yukun-Cui/FlagGems-Experimental`，由 `submit_operator.py` 固定）
+- ❌ **禁止 rebase** — 分支已基于 upstream/master 创建
+- 只 stage 6 个文件，分支名 `pr/<op>`，push 到 `origin`（指向 fork `ShawnsYing/FlagGems`，由 `submit_operator.py` 固定）
 
 ## Phase 7: Backfill
 
 ```bash
-python /root/baai-internship/skills/flaggems-pr-submit/scripts/operator_registry.py backfill <op> <pr_url>
+python /home/shuang/.claude/skills/flaggems-pr-submit/scripts/operator_registry.py backfill <op> <pr_url>
 
 # 查看状态
 python scripts/operator_registry.py pending --limit 20

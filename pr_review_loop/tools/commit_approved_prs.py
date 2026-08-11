@@ -16,7 +16,7 @@ FORBIDDEN_MESSAGE_TOKENS = ["Co-authored-by", "Co-authored by", "Generated-by", 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Commit approved PR worktrees.")
     parser.add_argument("--run-dir", required=True)
-    parser.add_argument("--worktree-root", default="/root/pr_worktrees")
+    parser.add_argument("--worktree-root", default="/home/shuang/pr_worktrees")
     parser.add_argument("--worktree-template", default="")
     parser.add_argument("--pr", type=int, action="append", default=[], help="Only consider this PR number. Repeatable.")
     parser.add_argument("--message", default="fix: address PR review comments")

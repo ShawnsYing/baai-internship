@@ -179,10 +179,10 @@ def test_reflection_pad3d_list_padding(...):
 
 - ❌ **禁止 `git add -A` 或 `git add .`**（仓库有 687 个 worktree 和大目录）
 - ❌ **禁止 cherry-pick**（worktree 代码结构与上游不同，容易带入旧基线并造成 PR merge conflict）
-- ❌ **禁止 rebase**（分支基于 upstream/infra-ci 创建，不需要）
+- ❌ **禁止 rebase**（分支基于 upstream/master 创建，不需要）
 - 必须逐文件 stage
 - 分支命名统一用 `pr/<operator>`
-- 每个分支基于 `upstream/infra-ci` 创建
+- 每个分支基于 `upstream/master` 创建
 
 
 ## 14. variant / canonical ID 覆盖
@@ -229,7 +229,7 @@ def test_reflection_pad3d_list_padding(...):
 ## 20. 新提交分支冲突预防
 
 - 新算子提交前必须 fetch 目标 base 分支（experimental=infra-ci，mainline=master）：`git fetch upstream <base>`。
-- `check_operator.py` 必须通过“上游冲突检查”：当前分支既不能提交上游已存在的算子，也必须能与目标 base 分支（`upstream/<base>`）无冲突合并。
+- `check_operator.py` 必须通过”上游冲突检查”：当前分支既不能提交上游已存在的算子，也必须能与目标 base 分支（`upstream/<base>`）无冲突合并。
 - 如果上游冲突检查失败，本次新提交必须重新基于最新 `upstream/<base>` 创建分支并重新提取算子，不能把冲突分支提交成 PR。
 
 ## 21. 普通算子 PR 不改全局 infra
@@ -245,14 +245,14 @@ def test_reflection_pad3d_list_padding(...):
 - `pyproject.toml`
 - 全局依赖 pin / build 环境文件
 
-如果 CI 在依赖解析、安装 torch/triton、checkout、容器初始化等阶段失败，先按 upstream/infra 环境问题记录。不要在算子 PR 中改 dependency pin 绕过；应等待 upstream 修复，或基于最新 `upstream/infra-ci` 重新创建干净分支并重新提取算子。
+如果 CI 在依赖解析、安装 torch/triton、checkout、容器初始化等阶段失败，先按 upstream/infra 环境问题记录。不要在算子 PR 中改 dependency pin 绕过；应等待 upstream 修复，或基于最新 `upstream/master` 重新创建干净分支并重新提取算子。
 
 ## 22. PR diff 文件列表必须 reviewer 友好
 
 “文件最终内容和 upstream 一样”不代表 GitHub PR diff 会干净。请求 review 前必须看 reviewer 实际会看到的 diff：
 
 ```bash
-gh pr diff <PR> --repo flagos-ai/FlagGems-Experimental --name-only
+gh pr diff <PR> --repo flagos-ai/FlagGems --name-only
 ```
 
 普通算子 PR 通常只允许以下文件：
@@ -267,7 +267,7 @@ gh pr diff <PR> --repo flagos-ai/FlagGems-Experimental --name-only
 - `src/flag_gems/runtime/backend/_nvidia/tune_configs.yaml`
 - `benchmark/core_shapes.yaml`
 
-如果出现无关文件，不要用 infra patch 掩盖，也不要把无关改动留给 reviewer 解释；重新基于最新 `upstream/infra-ci` 创建干净分支并重新提取/提交当前算子。
+如果出现无关文件，不要用 infra patch 掩盖，也不要把无关改动留给 reviewer 解释；重新基于最新 `upstream/master` 创建干净分支并重新提取/提交当前算子。
 
 ## 23. logger.debug 的位置
 
@@ -396,17 +396,17 @@ inp = utils.generate_tensor_input(shape, dtype, device)  # 加前缀
 
 ## 33. extract 脚本意外删除无关文件
 
-`extract_from_worktree.py` 修改 `ops/__init__.py` 或 `__init__.py` 时，可能因 worktree 副本与 `upstream/infra-ci` 不完全一致，导致 commit 中包含其他算子文件的删除。
+`extract_from_worktree.py` 修改 `ops/__init__.py` 或 `__init__.py` 时，可能因 worktree 副本与 `upstream/master` 不完全一致，导致 commit 中包含其他算子文件的删除。
 
-**症状**：`git diff --stat upstream/infra-ci..HEAD` 显示 `D` 开头的无关文件
+**症状**：`git diff --stat upstream/master..HEAD` 显示 `D` 开头的无关文件
 
 **修复**：
 ```bash
-git reset --mixed upstream/infra-ci
+git reset --mixed upstream/master
 git add src/flag_gems/ops/<op>.py tests/test_<op>.py benchmark/test_<op>.py \
   src/flag_gems/ops/__init__.py src/flag_gems/__init__.py conf/operators.yaml
 git commit -m "[KernelGen][Nvidia] Add <op> operator with Triton kernel"
 git push origin HEAD:pr/<op> --force
 ```
 
-**预防**：提交后立即检查 `git diff --stat upstream/infra-ci..HEAD`，确保只有 6 个文件的纯增量。
+**预防**：提交后立即检查 `git diff --stat upstream/master..HEAD`，确保只有 6 个文件的纯增量。

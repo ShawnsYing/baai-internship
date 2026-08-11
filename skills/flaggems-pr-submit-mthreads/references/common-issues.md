@@ -102,8 +102,8 @@
 
 ## 8. worktree import 问题
 
-- 环境中 `flag_gems` 以 editable 模式全局装于 `/root/FlagGems/src/`，直接 pytest 会加载全局版而非 worktree 版
-- **必须**用 `/root/baai-internship/auto_gen/fix_worktree_import.py`，且先 `cd` 进 worktree 目录
+- 环境中 `flag_gems` 以 editable 模式全局装于 `/home/shuang/FlagGems/src/`，直接 pytest 会加载全局版而非 worktree 版
+- **必须**用 `/home/shuang/baai-internship/auto_gen/fix_worktree_import.py`，且先 `cd` 进 worktree 目录
 - 验证：`fix_worktree_import.py -c "import flag_gems; print(flag_gems.__file__)"` 应指向 worktree
 
 ## 9. 代码质量
@@ -120,7 +120,7 @@
 - 逐文件 stage，通常只有 2 个：kernel + `_mthreads/ops/__init__.py`
 - commit message：`[KernelGen][MThreads] Add <op> Moore Threads specialized operator`
 - **无 Co-Authored-By / AI 署名**（🤖、Generated with 等），否则 CLA CI 失败
-- 分支 `pr/mthreads-<op>`，基于 `upstream/infra-ci`
+- 分支 `pr/mthreads-<op>`，基于 `upstream/master`
 - push 前 `git fetch upstream` 确认无冲突
 
 ## 11. 环境命令对照（勿混用其他后端）

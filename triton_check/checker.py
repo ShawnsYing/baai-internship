@@ -27,7 +27,7 @@ def load_dotenv(env_path: str = None):
     if env_path is None:
         env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
         if not os.path.exists(env_path):
-            env_path = "/root/baai-internship/auto_gen/.env"
+            env_path = "/home/shuang/baai-internship/auto_gen/.env"
     if not os.path.exists(env_path):
         return
     with open(env_path) as f:

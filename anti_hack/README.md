@@ -56,4 +56,4 @@ runner.save_report(
 
 反作弊检查关注「实现是否真实计算」，与 [triton_check](../triton_check/) 关注的「实现是否使用真正的 Triton kernel」互补，二者常配合使用：triton_check 做合规性静态审查，anti_hack 做执行期的作弊验证。
 
-`skills/flaggems-pr-submit` 的 `check_operator.py` 会通过 `ANTI_HACK_SCRIPT` 环境变量调用本目录的 `anti_hack.py`（默认已指向 `/root/baai-internship/anti_hack/anti_hack.py`）。
+`skills/flaggems-pr-submit` 的 `check_operator.py` 会通过 `ANTI_HACK_SCRIPT` 环境变量调用本目录的 `anti_hack.py`（默认已指向 `/home/shuang/baai-internship/anti_hack/anti_hack.py`）。

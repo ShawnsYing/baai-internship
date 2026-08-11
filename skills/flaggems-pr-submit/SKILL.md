@@ -74,8 +74,8 @@ description: >
 
 以下规则用于减少 reviewer churn；它们不替代上面的提交门禁，只约束普通 operator PR 的 diff、文案和 reviewer 可见代码形态。
 
-1. **禁止污染全局 infra 文件** — 普通算子 PR 不得修改 `tools/vendor.sh`、`setup.sh`、`tools/env.sh`、`.github/workflows/**`、`container/**`、`pyproject.toml` 或全局依赖 pin。若 CI 在安装依赖、checkout、环境初始化阶段失败，先归类为 upstream/infra 环境问题并等待或基于最新 `upstream/infra-ci` 重建干净分支；不要在算子 PR 中改依赖绕过。
-2. **PR diff 必须保持 operator-scoped** — push 后或请求 review 前运行 `gh pr diff <PR> --repo flagos-ai/FlagGems-Experimental --name-only`。允许文件通常只有 `src/flag_gems/ops/<op>.py`、`tests/test_<op>.py`、`benchmark/test_<op>.py`、`conf/operators.yaml`、`src/flag_gems/__init__.py`、`src/flag_gems/ops/__init__.py`；仅当当前算子确实需要时，允许 `src/flag_gems/runtime/backend/_nvidia/tune_configs.yaml` 或 `benchmark/core_shapes.yaml`。若出现非预期文件，重新基于最新 `upstream/infra-ci` 创建干净分支并重新提取/提交，不用 rebase 或 infra patch 掩盖。
+1. **禁止污染全局 infra 文件** — 普通算子 PR 不得修改 `tools/vendor.sh`、`setup.sh`、`tools/env.sh`、`.github/workflows/**`、`container/**`、`pyproject.toml` 或全局依赖 pin。若 CI 在安装依赖、checkout、环境初始化阶段失败，先归类为 upstream/infra 环境问题并等待或基于最新 `upstream/master` 重建干净分支；不要在算子 PR 中改依赖绕过。
+2. **PR diff 必须保持 operator-scoped** — push 后或请求 review 前运行 `gh pr diff <PR> --repo flagos-ai/FlagGems --name-only`。允许文件通常只有 `src/flag_gems/ops/<op>.py`、`tests/test_<op>.py`、`benchmark/test_<op>.py`、`conf/operators.yaml`、`src/flag_gems/__init__.py`、`src/flag_gems/ops/__init__.py`；仅当当前算子确实需要时，允许 `src/flag_gems/runtime/backend/_nvidia/tune_configs.yaml` 或 `benchmark/core_shapes.yaml`。若出现非预期文件，重新基于最新 `upstream/master` 创建干净分支并重新提取/提交，不用 rebase 或 infra patch 掩盖。
 3. **logger 位置必须 reviewer 友好** — public wrapper 的 `logger.debug("GEMS <OP>")` 应是 docstring 后第一条有意义语句，先于输入检查、shape normalization、dtype cast 等逻辑。message 继续遵循 Rule 47 的 uppercase underscore 格式；确有例外时必须能用 sibling precedent 解释。
 4. **Benchmark class 保持 module-scoped** — `benchmark/test_<op>.py` 中自定义 benchmark class 必须定义在模块顶层，`test_<op>()` 只负责实例化并 `run()`。不得在 pytest test function 内定义 class。
 5. **禁止空壳 benchmark override** — 不保留只调用 `super().set_shapes(...)` / `super().set_more_shapes(...)` 且不改变行为的 override；只有实际改变 shapes、输入构造或 benchmark 行为时才覆盖。
@@ -140,7 +140,7 @@ python scripts/extract_from_worktree.py CrossAttention \
   --source-name Cross_Attention \
   --impl-name cross_attention \
   --canonical-name CrossAttention \
-  --repo-dir /root/FlagGems
+  --repo-dir /home/shuang/FlagGems
 ```
 
 ### 性能阈值规则
@@ -162,7 +162,7 @@ python scripts/extract_from_worktree.py CrossAttention \
 
 ### Backend Specialization Gate（仅当 PR 包含 backend 特化时）
 
-如果 `git diff --name-only upstream/infra-ci...HEAD` 包含 `src/flag_gems/runtime/backend/**`，或任务明确要求特化 backend，则额外执行以下检查；否则跳过。
+如果 `git diff --name-only upstream/master...HEAD` 包含 `src/flag_gems/runtime/backend/**`，或任务明确要求特化 backend，则额外执行以下检查；否则跳过。
 
 #### 触发条件
 
@@ -190,16 +190,16 @@ python scripts/extract_from_worktree.py CrossAttention \
 
 | Item | Value |
 |------|-------|
-| Repo | Default `/root/FlagGems`; caller-provided `--repo-dir` overrides this |
+| Repo | Default `/home/shuang/FlagGems`; caller-provided `--repo-dir` overrides this |
 | Fork | Caller-provided git remote / `GH_TOKEN` identity |
 | Upstream | 由 `--target` 决定（见下方「提交目标」） |
-| Worktrees | `/root/FlagGems/.worktrees/gen-<op>` unless `--repo-dir` overrides repo |
+| Worktrees | `/home/shuang/FlagGems/.worktrees/gen-<op>` unless `--repo-dir` overrides repo |
 | Token | `GH_TOKEN` from the current process environment |
-| Data | `/root/baai-internship/skills/flaggems-pr-submit/data/规范名.xlsx`, `/root/baai-internship/skills/flaggems-pr-submit/data/第一批pr算子.xlsx`, `/root/baai-internship/skills/flaggems-pr-submit/data/pr状态记录.md` |
+| Data | `/home/shuang/.claude/skills/flaggems-pr-submit/data/规范名.xlsx`, `/home/shuang/.claude/skills/flaggems-pr-submit/data/第一批pr算子.xlsx`, `/home/shuang/.claude/skills/flaggems-pr-submit/data/pr状态记录.md` |
 
 数据文件默认集中在 skill 的 `data/` 目录；如需临时覆盖，可使用 `FLAGGEMS_PR_SUBMIT_DATA_DIR`、`FLAGGEMS_NORM_XLSX`、`FLAGGEMS_PR_XLSX`、`FLAGGEMS_PR_RECORD_PATH`。
 
-不要在 skill、日志或 PR 内容中写入 token。默认使用 `/root/FlagGems`；如果调用方或批量脚本明确给出 `--repo-dir`，以调用方传入值为准。
+不要在 skill、日志或 PR 内容中写入 token。默认使用 `/home/shuang/FlagGems`；如果调用方或批量脚本明确给出 `--repo-dir`，以调用方传入值为准。
 
 ### 提交目标（target）
 
@@ -212,23 +212,23 @@ python scripts/extract_from_worktree.py CrossAttention \
 
 ⚠️ **开工前先确认 target**：不确定投哪个时，先问用户，不要默认硬投 `experimental`。
 
-⚠️ **本地 remote 前提**：两个 target 是不同 GitHub 仓库，本地 `upstream` remote 一次只能指向其一。切到 `mainline` 前，确保 `git -C /root/FlagGems remote get-url upstream` 指向 `flagos-ai/FlagGems`（experimental 则指向 `-Experimental`）。target 只切换「PR 目标仓库 + base 分支」，不改本地 remote 名。
+⚠️ **本地 remote 前提**：两个 target 是不同 GitHub 仓库，本地 `upstream` remote 一次只能指向其一。切到 `mainline` 前，确保 `git -C /home/shuang/FlagGems remote get-url upstream` 指向 `flagos-ai/FlagGems`（experimental 则指向 `-Experimental`）。target 只切换「PR 目标仓库 + base 分支」，不改本地 remote 名。
 
 下文命令示例默认 `experimental`；投 `mainline` 时给相关命令补 `--target mainline`。
 
 ## Workflow（模型只需调用 3 个命令）
 
-**脚本目录: `/root/baai-internship/skills/flaggems-pr-submit/scripts/`**
+**脚本目录: `/home/shuang/.claude/skills/flaggems-pr-submit/scripts/`**
 
 ### Phase 0: Name Lookup
 ```bash
-cd /root/FlagGems
-python /root/baai-internship/skills/flaggems-pr-submit/scripts/operator_registry.py lookup <op>
+cd /home/shuang/FlagGems
+python /home/shuang/.claude/skills/flaggems-pr-submit/scripts/operator_registry.py lookup <op>
 ```
 
 ### Phase 1: Preparation
 ```bash
-cd /root/FlagGems
+cd /home/shuang/FlagGems
 # experimental（默认）：分支基于 upstream/infra-ci
 git checkout -b pr/<op> upstream/infra-ci
 # mainline：先确保 upstream 指向 flagos-ai/FlagGems，再基于 upstream/master
@@ -240,9 +240,9 @@ git checkout -b pr/<op> upstream/infra-ci
 
 ### Phase 2: Extract Code（一步完成，禁止手动编写）
 ```bash
-python /root/baai-internship/skills/flaggems-pr-submit/scripts/extract_from_worktree.py <op> --repo-dir /root/FlagGems
+python /home/shuang/.claude/skills/flaggems-pr-submit/scripts/extract_from_worktree.py <op> --repo-dir /home/shuang/FlagGems
 # 如果本地规范名表尚未覆盖特殊映射，可显式指定：
-python /root/baai-internship/skills/flaggems-pr-submit/scripts/extract_from_worktree.py <canonical-op> --source-name <worktree-op> --impl-name <worktree-wrapper-op> --canonical-name <canonical-op> --repo-dir /root/FlagGems
+python /home/shuang/.claude/skills/flaggems-pr-submit/scripts/extract_from_worktree.py <canonical-op> --source-name <worktree-op> --impl-name <worktree-wrapper-op> --canonical-name <canonical-op> --repo-dir /home/shuang/FlagGems
 ```
 脚本自动从 worktree 提取 6 个文件：kernel、test、benchmark、ops/__init__.py、__init__.py、operators.yaml。
 如果 `source_name != canonical_name` 或 `impl_name != canonical_name`，脚本会在提取后系统性重命名到规范名，并写入 `.name_plan/<canonical>.json` 供 `check_operator.py` 检查旧名残留。
@@ -252,14 +252,14 @@ python /root/baai-internship/skills/flaggems-pr-submit/scripts/extract_from_work
 
 ### Phase 3-7: Validate, Test, Submit（一步完成，禁止手动跳过）
 ```bash
-python /root/baai-internship/skills/flaggems-pr-submit/scripts/submit_operator.py <op> --repo-dir /root/FlagGems --gpu <N>
+python /home/shuang/baai-internship/skills/flaggems-pr-submit/scripts/submit_operator.py <op> --repo-dir /home/shuang/FlagGems --gpu <N>
 # 投 mainline 时加 --target mainline
 ```
 脚本串行执行 9 步：check_operator → pre-commit → **本地测试** → **本地 benchmark** → PR描述生成 → commit → push → 创建 PR → 回填链接。所选 target 的 upstream 仓库 / base 分支会贯穿全部步骤（fetch、冲突检查、PR base）。
 **任何正确性/注册/测试/benchmark 可运行性步骤失败立即中断退出。不允许手动执行单独步骤来绕过。低于 speedup 阈值只记录 warning，不中断。**
 
 ❌ **禁止手动创建 PR** — 不允许直接调用 `gh pr create` / `gh pr edit` / `gh pr merge`；创建 PR 和 PR body 必须由 `submit_operator.py` 完成。
-❌ **禁止删除上游已有实现文件** — 如果独立提交当前算子需要删除/重命名 upstream/infra-ci 已存在的实现、测试或 benchmark，必须报告 BLOCKED，不得自行“修复”为大重构。
+❌ **禁止删除上游已有实现文件** — 如果独立提交当前算子需要删除/重命名 upstream/master 已存在的实现、测试或 benchmark，必须报告 BLOCKED，不得自行“修复”为大重构。
 ❌ **禁止修改上游已有测试/benchmark 函数** — 当前算子只能新增或迁移本算子必要文件；遇到已有测试结构冲突时报告 BLOCKED。
 ❌ **禁止跳过测试** — 测试失败说明代码有问题，必须修复后重新提交。
 ❌ **禁止跳过 benchmark** — 无性能数据的 PR 不提交。benchmark 失败时修复代码或放弃该算子；benchmark 跑通但 speedup 低于阈值允许提交，只在日志和 PR 描述中如实展示。
@@ -276,7 +276,7 @@ PR 收到 reviewer comments 后，批量获取并逐 PR 修复。
 
 ```bash
 # 拉取所有待处理 comments（默认 upstream=flagos-ai/FlagGems-Experimental, fork-owner=Yukun-Cui）
-python /root/baai-internship/skills/flaggems-pr-submit/scripts/fetch_review_comments.py
+python /home/shuang/baai-internship/skills/flaggems-pr-submit/scripts/fetch_review_comments.py
 # mainline 的 PR：--repo flagos-ai/FlagGems
 # JSON 格式供程序化处理：加 --json
 ```
@@ -286,24 +286,24 @@ python /root/baai-internship/skills/flaggems-pr-submit/scripts/fetch_review_comm
 逐 PR 修复时，如需 rebase 到最新上游并自动解决 `__init__.py` / `ops/__init__.py` 的排序冲突：
 
 ```bash
-cd /root/FlagGems
+cd /home/shuang/FlagGems
 git checkout <branch>
 # 一键 rebase + 自动解冲突 + push（默认 base=infra-ci, fork=origin）
-python /root/baai-internship/skills/flaggems-pr-submit/scripts/rebase_and_resolve.py --repo-dir .
+python /home/shuang/baai-internship/skills/flaggems-pr-submit/scripts/rebase_and_resolve.py --repo-dir .
 # mainline：--base master
 ```
 
 手动控制时，冲突可单独调用解决脚本后 `git add` + `git rebase --continue`：
 
 ```bash
-python /root/baai-internship/skills/flaggems-pr-submit/scripts/resolve_init_conflicts.py --repo-dir .      # _FULL_CONFIG 排序
-python /root/baai-internship/skills/flaggems-pr-submit/scripts/resolve_ops_init_conflicts.py --repo-dir .  # ops/__init__.py import+__all__
+python /home/shuang/.claude/skills/flaggems-pr-submit/scripts/resolve_init_conflicts.py --repo-dir .      # _FULL_CONFIG 排序
+python /home/shuang/.claude/skills/flaggems-pr-submit/scripts/resolve_ops_init_conflicts.py --repo-dir .  # ops/__init__.py import+__all__
 ```
 
 多重载算子提交前，用一致性脚本校验 yaml id / benchmark mark+op_name / test mark 三方对齐：
 
 ```bash
-python /root/baai-internship/skills/flaggems-pr-submit/scripts/check_overload_consistency.py <op> --repo-dir /root/FlagGems
+python /home/shuang/.claude/skills/flaggems-pr-submit/scripts/check_overload_consistency.py <op> --repo-dir /home/shuang/FlagGems
 ```
 
 ### Phase 9: CI 失败自动修复
@@ -311,8 +311,8 @@ python /root/baai-internship/skills/flaggems-pr-submit/scripts/check_overload_co
 PR push 后 CI 失败（code-style、python-op 等），用 fix_ci.py 诊断并修复：
 
 ```bash
-python /root/baai-internship/skills/flaggems-pr-submit/scripts/fix_ci.py <PR_NUMBER>
-python /root/baai-internship/skills/flaggems-pr-submit/scripts/fix_ci.py <PR_NUMBER> --dry-run   # 只分析
+python /home/shuang/.claude/skills/flaggems-pr-submit/scripts/fix_ci.py <PR_NUMBER>
+python /home/shuang/.claude/skills/flaggems-pr-submit/scripts/fix_ci.py <PR_NUMBER> --dry-run   # 只分析
 ```
 
 自动修复：无关文件混入 commit（reset + 只 stage 算子文件）、isort/black 格式错误（修复后 amend）。签名不匹配、CPU 后端不支持等只诊断，需人工处理。默认 `base=infra-ci`、push remote=`origin`，可用 `FLAGGEMS_BASE` / `FLAGGEMS_PUSH_REMOTE` 覆盖（mainline：`FLAGGEMS_BASE=master`）。
@@ -404,8 +404,8 @@ python /root/baai-internship/skills/flaggems-pr-submit/scripts/fix_ci.py <PR_NUM
   - 判断方法：算子名包含 `rand`/`bernoulli`/`dropout`/`normal`/`poisson`/`multinomial` → 必须用统计验证
   - 统计验证 = 检查 `mean ≈ expected_p` 且 `var ≈ expected_var`，不是 `gems_assert_close`
 - [ ] **Rule 34 先通用后特化** — 特化版本是否依赖尚未 merge 的通用版？
-  - 判断方法：如果算子名含 `.out`/`.Tensor`/`.Scalar`/`_`(inplace) 后缀，检查基础版是否已在 upstream/infra-ci 中
-  - 检查命令：`git show upstream/infra-ci:src/flag_gems/ops/<base_op>.py`
+  - 判断方法：如果算子名含 `.out`/`.Tensor`/`.Scalar`/`_`(inplace) 后缀，检查基础版是否已在 upstream/master 中
+  - 检查命令：`git show upstream/master:src/flag_gems/ops/<base_op>.py`
   - 如果基础版未 merge，先提交基础版
 - [ ] **yaml kind 选择** — 算子类别是否正确？resize/clone/view → Tensor，softmax/relu → NeuralNetwork，sum/mean → Reduction，matmul → BLAS
   - 默认 Math 只适用于数学函数，不要对所有算子都写 Math
@@ -458,7 +458,7 @@ python /root/baai-internship/skills/flaggems-pr-submit/scripts/fix_ci.py <PR_NUM
 
 - ❌ `git add -A` 或 `git add .` — 687 worktrees 会被误加
 - ❌ `git cherry-pick` — worktree 代码结构与上游不同
-- ❌ `git rebase` — 分支已基于 upstream/infra-ci
+- ❌ `git rebase` — 分支已基于 upstream/master
 - ❌ 任何 AI 署名/协作者署名在 commit message 或 PR body 中 — 包括 `Co-authored-by`、`Co-authored by`、`Generated-by`、`Generated with`、"🤖 Generated with Claude Code" 等，CLA CI 会失败
 - ❌ 手动编写 test/benchmark 代码 — 必须从 worktree 提取
 - ❌ 手动执行 submit_operator.py 的单个步骤来绕过失败

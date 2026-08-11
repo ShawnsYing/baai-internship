@@ -15,7 +15,7 @@ device:
   - 6
   - 7
   lock_dir: /tmp/auto_gen_gpu_locks
-flaggems_dir: /root/FlagGems
+flaggems_dir: /home/shuang/FlagGems
 branch_prefix: pr/
 base_branch: master
 iluvatar:

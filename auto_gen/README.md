@@ -124,7 +124,7 @@ auto_gen/
 
 ```yaml
 # FlagGems 仓库路径
-flaggems_dir: /root/FlagGems
+flaggems_dir: /home/shuang/FlagGems
 
 # Python 解释器路径
 python_path: /usr/bin/python3
