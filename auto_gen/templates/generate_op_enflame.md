@@ -21,10 +21,10 @@
 
 ### ⚠️ 重要：修复 flag_gems 导入路径
 
-**问题**：当前环境中 `flag_gems` 以 editable 模式全局安装于 `/root/FlagGems/src/`，通过 `_flag_gems_editable` import hook 拦截导入。即使 `sys.path.insert(0, 'src')` 指向 worktree 的 src/，Python 仍会加载全局版本。
+**问题**：当前环境中 `flag_gems` 以 editable 模式全局安装于 `/home/shuang/FlagGems/src/`，通过 `_flag_gems_editable` import hook 拦截导入。即使 `sys.path.insert(0, 'src')` 指向 worktree 的 src/，Python 仍会加载全局版本。
 
 **解决方案**：本仓库 `auto_gen/` 目录下提供了修复脚本 `fix_worktree_import.py`，该脚本会：
-1. 从 `sys.path` 移除全局 `/root/FlagGems` 路径
+1. 从 `sys.path` 移除全局 `/home/shuang/FlagGems` 路径
 2. 移除 `_flag_gems_editable` import hook
 3. 自动检测 worktree 根目录并插入 `sys.path` 最前端
 4. 清除 `flag_gems` 缓存
@@ -34,11 +34,11 @@
 ```bash
 # 方式 A：在 python -c 中使用（-c 模式）
 cd {{WORK_DIR}}
-{{PYTHON_PATH}} /root/baai-internship/auto_gen/fix_worktree_import.py -c "import flag_gems; print(flag_gems.__file__)"
+{{PYTHON_PATH}} /home/shuang/baai-internship/auto_gen/fix_worktree_import.py -c "import flag_gems; print(flag_gems.__file__)"
 
 # 方式 B：运行 pytest（--pytest 模式）
 cd {{WORK_DIR}}
-{{PYTHON_PATH}} /root/baai-internship/auto_gen/fix_worktree_import.py --pytest tests/test_{{OPERATOR}}.py -m {{OPERATOR}} -vs --log-cli-level=DEBUG
+{{PYTHON_PATH}} /home/shuang/baai-internship/auto_gen/fix_worktree_import.py --pytest tests/test_{{OPERATOR}}.py -m {{OPERATOR}} -vs --log-cli-level=DEBUG
 ```
 
 > ⚠️ **注意**：必须 `cd {{WORK_DIR}}` 后再执行，脚本依赖 CWD 检测 worktree 根目录。不要在命令中额外 `sys.path.insert`，脚本已处理所有路径。
@@ -265,7 +265,7 @@ ls {{WORK_DIR}}/tests/test_{{OPERATOR}}.py
 
 ```bash
 cd {{WORK_DIR}}
-CUDA_VISIBLE_DEVICES={{GPU_ID}} {{PYTHON_PATH}} /root/baai-internship/auto_gen/fix_worktree_import.py --pytest tests/test_{{OPERATOR}}.py -m {{OPERATOR}} -vs --log-cli-level=DEBUG
+CUDA_VISIBLE_DEVICES={{GPU_ID}} {{PYTHON_PATH}} /home/shuang/baai-internship/auto_gen/fix_worktree_import.py --pytest tests/test_{{OPERATOR}}.py -m {{OPERATOR}} -vs --log-cli-level=DEBUG
 ```
 
 **验证算子被调用**：在测试输出中检查是否出现了类似 `GEMS_ENFLAME {{OPERATOR}}` 的 DEBUG 日志。
@@ -273,8 +273,8 @@ CUDA_VISIBLE_DEVICES={{GPU_ID}} {{PYTHON_PATH}} /root/baai-internship/auto_gen/f
 **验证导入正确性**（使用 `-c` 模式）：
 ```bash
 cd {{WORK_DIR}}
-CUDA_VISIBLE_DEVICES={{GPU_ID}} {{PYTHON_PATH}} /root/baai-internship/auto_gen/fix_worktree_import.py -c "import flag_gems; print(flag_gems.__file__)"
-# 必须显示 worktree 路径，非 /root/FlagGems/
+CUDA_VISIBLE_DEVICES={{GPU_ID}} {{PYTHON_PATH}} /home/shuang/baai-internship/auto_gen/fix_worktree_import.py -c "import flag_gems; print(flag_gems.__file__)"
+# 必须显示 worktree 路径，非 /home/shuang/FlagGems/
 ```
 
 ### Step 7: 运行 benchmark
@@ -285,7 +285,7 @@ CUDA_VISIBLE_DEVICES={{GPU_ID}} {{PYTHON_PATH}} /root/baai-internship/auto_gen/f
 
 ```bash
 cd {{WORK_DIR}}
-CUDA_VISIBLE_DEVICES={{GPU_ID}} {{PYTHON_PATH}} /root/baai-internship/auto_gen/fix_worktree_import.py --pytest benchmark/test_{{OPERATOR}}.py -m {{OPERATOR}} -vs
+CUDA_VISIBLE_DEVICES={{GPU_ID}} {{PYTHON_PATH}} /home/shuang/baai-internship/auto_gen/fix_worktree_import.py --pytest benchmark/test_{{OPERATOR}}.py -m {{OPERATOR}} -vs
 ```
 
 > ⚠️ **注意**：特化实现至少不能比通用实现差；如果性能反而下降，需重新优化。

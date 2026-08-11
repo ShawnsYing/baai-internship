@@ -26,8 +26,8 @@
 
 ```bash
 ./github_reviews/fetch_reviews.sh \
-  --repo flagos-ai/FlagGems-Experimental \
-  --author Yukun-Cui \
+  --repo flagos-ai/FlagGems \
+  --author ShawnsYing \
   --date today \
   --unreplied
 ```
@@ -38,8 +38,8 @@
 
 | 参数 | 说明 |
 |---|---|
-| `--repo owner/name` | 目标仓库，默认 `flagos-ai/FlagGems-Experimental` |
-| `--author user` | PR 作者，默认 `Yukun-Cui` |
+| `--repo owner/name` | 目标仓库，默认 `flagos-ai/FlagGems` |
+| `--author user` | PR 作者，默认 `ShawnsYing` |
 | `--days N` | 只统计最近 N 天 |
 | `--since YYYY-MM-DD` | 只统计指定日期之后 |
 | `--date today\|YYYY-MM-DD` | 只统计某一天 |

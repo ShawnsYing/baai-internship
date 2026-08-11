@@ -11,7 +11,7 @@ shift
 
 REPO_DIR=""
 FORK_OWNER=""
-UPSTREAM="flagos-ai/FlagGems-Experimental"
+UPSTREAM="flagos-ai/FlagGems"
 BENCH_LOG=""
 DRY_RUN=false
 while [[ $# -gt 0 ]]; do
@@ -28,7 +28,7 @@ done
 # 默认 benchmark log 位置（preflight/Phase 1.5 现跑时 tee 到此）
 BENCH_LOG="${BENCH_LOG:-/tmp/${OP}_mthreads_bench.log}"
 
-REPO_DIR="${REPO_DIR:-/root/FlagGems}"
+REPO_DIR="${REPO_DIR:-/home/shuang/FlagGems}"
 cd "$REPO_DIR"
 
 TITLE="[KernelGen][MThreads] Add ${OP} Moore Threads specialized operator"
@@ -74,7 +74,7 @@ implementation via \`runtime.replace_customized_ops()\`.
 - \`src/flag_gems/runtime/backend/_mthreads/ops/__init__.py\`: Register import and \`__all__\`"
 fi
 
-BASE_BRANCH="infra-ci"
+BASE_BRANCH="master"
 
 if $DRY_RUN; then
     echo "=== DRY RUN: PR Preview ==="

@@ -6,9 +6,9 @@
 : "${GH_TOKEN:?set GH_TOKEN first}"
 
 gh pr create \
-  --repo flagos-ai/FlagGems-Experimental \
-  --head Yukun-Cui:pr/<op> \
-  --base infra-ci \
+  --repo flagos-ai/FlagGems \
+  --head ShawnsYing:pr/<op> \
+  --base master \
   --title "[KernelGen][Nvidia] Add <op> operator with Triton kernel" \
   --body "$(cat <<'EOF'
 ## Summary

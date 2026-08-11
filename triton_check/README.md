@@ -35,7 +35,7 @@ ANTHROPIC_MODEL=claude-opus-4-8
 根据实际环境调整：
 
 ```yaml
-flaggems_dir: /root/FlagGems    # FlagGems 仓库路径
+flaggems_dir: /home/shuang/FlagGems    # FlagGems 仓库路径
 
 # 扫描模式：single_worktree（单目录）/ multi_worktree（每算子独立 worktree）
 scan_mode: multi_worktree
@@ -43,7 +43,7 @@ worktree: ""                              # single_worktree 模式下的 worktre
 worktree_pattern: ".worktrees/gen-{op}"   # multi_worktree 模式下的路径模板
 
 # 仅检查列表中的算子，留空=扫描目录下所有
-ops_list: "/root/baai-internship/auto_gen/ops_list.txt"
+ops_list: "/home/shuang/baai-internship/auto_gen/ops_list.txt"
 
 scan:
   nvidia_ops: true      # 是否检查 src/flag_gems/ops/

@@ -28,7 +28,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-PR_URL_RE = re.compile(r"https://github\.com/flagos-ai/FlagGems-Experimental/pull/\d+")
+PR_URL_RE = re.compile(r"https://github\.com/flagos-ai/FlagGems/pull/\d+")
 ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
 LOCAL_NO_PROXY_HOSTS = ("localhost", "127.0.0.1", "::1")
 MANUAL_PR_RE = re.compile(r"\bgh\s+pr\s+(?:create|edit|merge|ready|reopen|close)\b")
@@ -500,7 +500,7 @@ Hard requirements:
 - The skill's Environment table may contain historical defaults. For this run, the authoritative repo is the worktree repo above, and the authoritative token is the GH_TOKEN environment variable passed to this process. Do not use any hardcoded token or repo path from the skill text.
 - Work only inside this worktree repo: {worktree_dir}.
 - Submit or validate exactly one operator: {op_name}.
-- Do not modify /root/baai-internship/batch_pr_submit or the source repo except through normal git worktree metadata.
+- Do not modify /home/shuang/baai-internship/batch_pr_submit or the source repo except through normal git worktree metadata.
 - Do not cherry-pick, rebase, force push, or use destructive git reset/checkout commands.
 - Do not manually create the PR or manually write the PR body. Final PR creation must go through submit_operator.py.
 - Do not run gh pr create/edit/merge/ready/reopen/close yourself. Those are policy violations in this batch runner.
@@ -1048,12 +1048,12 @@ def write_summary(run_log_dir: Path, run_id: str, results: list[Result], args: a
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Parallel Claude-agent FlagGems PR submitter")
     parser.add_argument("--ops-file", required=True, help="Operator list file (one operator per line)")
-    parser.add_argument("--repo-dir", default="/root/FlagGems", type=Path)
-    parser.add_argument("--skill-dir", default="/root/baai-internship/skills/flaggems-pr-submit", type=Path)
+    parser.add_argument("--repo-dir", default="/home/shuang/FlagGems", type=Path)
+    parser.add_argument("--skill-dir", default="/home/shuang/.claude/skills/flaggems-pr-submit", type=Path)
     parser.add_argument("--scripts-dir", default=None, type=Path)
     parser.add_argument("--worktree-base", default="/tmp/flaggems_agent_worktrees", type=Path)
-    parser.add_argument("--log-dir", default="/root/baai-internship/batch_pr_submit/logs/agent", type=Path)
-    parser.add_argument("--status-file", default="/root/baai-internship/batch_pr_submit/agent_status.json", type=Path)
+    parser.add_argument("--log-dir", default="/home/shuang/baai-internship/batch_pr_submit/logs/agent", type=Path)
+    parser.add_argument("--status-file", default="/home/shuang/baai-internship/batch_pr_submit/agent_status.json", type=Path)
     parser.add_argument("--branch-prefix", default="agent-pr")
     parser.add_argument("--max-workers", type=int, default=4)
     parser.add_argument("--gpus", default="auto", help="'auto'/'all' or comma-separated physical GPU IDs")

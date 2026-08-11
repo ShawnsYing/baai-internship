@@ -222,7 +222,7 @@ def main():
     parser.add_argument("operator", help="算子名称（如 reflection_pad3d）")
     parser.add_argument(
         "--repo-dir",
-        default=os.environ.get("FLAGGEMS_REPO", "/root/FlagGems"),
+        default=os.environ.get("FLAGGEMS_REPO", "/home/shuang/FlagGems"),
         help="FlagGems 仓库路径",
     )
     args = parser.parse_args()

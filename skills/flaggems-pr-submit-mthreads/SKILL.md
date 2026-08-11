@@ -44,9 +44,9 @@ description and speedup data).
 
 1. **先跑脚本，再 commit** — 每次 commit 前必须运行 `check_operator.py` 并确认 0 errors
 2. **必须先确认通用算子已存在上游** — 摩尔线程特化覆盖的是通用层已有算子。提交前必须确认
-   `git show upstream/infra-ci:src/flag_gems/ops/<op>.py` 成功（或该算子在通用层有等价实现）。
+   `git show upstream/master:src/flag_gems/ops/<op>.py` 成功（或该算子在通用层有等价实现）。
    如果通用算子还没 merge，**先提交通用版**（用 `flaggems-pr-submit` skill），再提交摩尔线程特化版
-3. **必须确认摩尔线程特化不存在上游** — `git show upstream/infra-ci:src/flag_gems/runtime/backend/_mthreads/ops/<op>.py`
+3. **必须确认摩尔线程特化不存在上游** — `git show upstream/master:src/flag_gems/runtime/backend/_mthreads/ops/<op>.py`
    应报错。已存在则不提交此 PR
 4. **回退到通用实现** — wrapper 必须在不满足特化条件（非 musa 设备、不支持的 dtype、空 tensor、
    非 contiguous 等）时回退 `default_<op>`（`from flag_gems.ops.<op> import <op> as default_<op>`），
@@ -85,7 +85,7 @@ description and speedup data).
       专测 fp64 的独立用例加 `@pytest.mark.skipif(not fp64_is_supported, reason="...fp64")`
     - `fp64_is_supported = flag_gems.runtime.device.support_fp64`（accuracy 测试可用
       `utils.fp64_is_supported`）。改后这些文件成为本 PR 提交项
-16. **每个 PR 只包含一个算子的特化** — 提交前运行 `git diff --name-only upstream/infra-ci..HEAD`
+16. **每个 PR 只包含一个算子的特化** — 提交前运行 `git diff --name-only upstream/master..HEAD`
     确认没有混入其他算子文件
 17. **PR 描述用英文** — 遵循下方 PR Description 模板，全部用英文撰写
 18. **禁止 AI 署名 / Co-Authored-By** — commit message 和 PR body 中不得包含 `Co-authored-by`、
@@ -113,27 +113,27 @@ description and speedup data).
 
 | Item | Value |
 |------|-------|
-| Repo path | `/root/FlagGems`（`--repo-dir` 可覆盖） |
+| Repo path | `/home/shuang/FlagGems`（`--repo-dir` 可覆盖） |
 | Fork repo | caller-provided git remote（默认 `fork`） |
-| Upstream repo | `flagos-ai/FlagGems-Experimental`（`upstream`） |
-| Default branch | `infra-ci` |
+| Upstream repo | `flagos-ai/FlagGems`（`upstream`） |
+| Default branch | `master` |
 | Worktrees | `.worktrees/gen-<op>`（摩尔线程算子列表见 `auto_gen/ops_list_mthreads.txt`） |
 | MThreads kernel path | `src/flag_gems/runtime/backend/_mthreads/ops/` |
 | Reference kernels | `_mthreads/ops/celu.py`（pointwise+fallback）、`log.py`（手写 kernel）、`addmm.py`（BLAS） |
-| Import fix helper | `/root/baai-internship/auto_gen/fix_worktree_import.py` |
+| Import fix helper | `/home/shuang/baai-internship/auto_gen/fix_worktree_import.py` |
 
 不要在 skill、日志或 PR 内容中写入 token。
 
 ## Complete Workflow
 
-**脚本目录: `/root/baai-internship/skills/flaggems-pr-submit-mthreads/scripts/`**
+**脚本目录: `/home/shuang/.claude/skills/flaggems-pr-submit-mthreads/scripts/`**
 
 ### Phase 0: Name Lookup + Preflight（MUST DO FIRST）
 
 ```bash
-cd /root/FlagGems
-python /root/baai-internship/skills/flaggems-pr-submit-mthreads/scripts/operator_registry.py lookup <op>
-python /root/baai-internship/skills/flaggems-pr-submit-mthreads/scripts/preflight.sh <op> --repo-dir /root/FlagGems
+cd /home/shuang/FlagGems
+python /home/shuang/.claude/skills/flaggems-pr-submit-mthreads/scripts/operator_registry.py lookup <op>
+python /home/shuang/.claude/skills/flaggems-pr-submit-mthreads/scripts/preflight.sh <op> --repo-dir /home/shuang/FlagGems
 ```
 
 `preflight.sh` 检查：worktree kernel 存在、**通用算子在上游存在**、**摩尔线程特化在上游不存在**、
@@ -142,19 +142,19 @@ python /root/baai-internship/skills/flaggems-pr-submit-mthreads/scripts/prefligh
 ### Phase 1: Preparation
 
 ```bash
-cd /root/FlagGems
+cd /home/shuang/FlagGems
 git fetch upstream
-git checkout -b pr/mthreads-<op> upstream/infra-ci
+git checkout -b pr/mthreads-<op> upstream/master
 ```
-- ❌ **禁止 cherry-pick / rebase** — worktree 结构与上游不同，分支已基于 upstream/infra-ci
+- ❌ **禁止 cherry-pick / rebase** — worktree 结构与上游不同，分支已基于 upstream/master
 
 ### Phase 1.5: Worktree Test & Speedup（MUST DO — 阻塞项）
 
 在 worktree 中运行测试和 benchmark，确认特化可用、被正确替换、并获取加速比。
-必须用 `fix_worktree_import.py`（否则会加载全局 `/root/FlagGems` 版本而非 worktree 版本）：
+必须用 `fix_worktree_import.py`（否则会加载全局 `/home/shuang/FlagGems` 版本而非 worktree 版本）：
 
 ```bash
-cd /root/FlagGems/.worktrees/gen-<op>
+cd /home/shuang/FlagGems/.worktrees/gen-<op>
 
 # 用空闲 MUSA 卡（先 mthreads-gmi 检查）
 GPU=<空闲卡号>
@@ -165,15 +165,15 @@ grep -nE "torch\.float64|torch\.double" tests/test_<op>.py benchmark/test_<op>.p
 #   无命中 → 共享 dtype 常量已自动跳过 fp64，不改任何文件
 
 # 1. 精度测试（必须全部 PASS，且输出中必须出现 GEMS_MTHREADS <OP> DEBUG 日志）
-MUSA_VISIBLE_DEVICES=$GPU python3 /root/baai-internship/auto_gen/fix_worktree_import.py \
+MUSA_VISIBLE_DEVICES=$GPU python3 /home/shuang/baai-internship/auto_gen/fix_worktree_import.py \
   --pytest tests/test_<op>.py -m <op> -vs --log-cli-level=DEBUG
 
 # 2. benchmark 获取加速比（对比特化 vs 通用）；tee 到 log 供后续生成 PR 表格
-MUSA_VISIBLE_DEVICES=$GPU python3 /root/baai-internship/auto_gen/fix_worktree_import.py \
+MUSA_VISIBLE_DEVICES=$GPU python3 /home/shuang/baai-internship/auto_gen/fix_worktree_import.py \
   --pytest benchmark/test_<op>.py -m <op> -vs | tee /tmp/<op>_mthreads_bench.log
 
 # 3. 验证导入的是 worktree 版本
-MUSA_VISIBLE_DEVICES=$GPU python3 /root/baai-internship/auto_gen/fix_worktree_import.py \
+MUSA_VISIBLE_DEVICES=$GPU python3 /home/shuang/baai-internship/auto_gen/fix_worktree_import.py \
   -c "import flag_gems; print(flag_gems.__file__)"   # 必须是 worktree 路径
 ```
 
@@ -199,8 +199,8 @@ benchmark 输出的每行 SUCCESS 数据（按 dtype 分组）就是 PR Performa
 用 `prepare_kernel.sh` 从 worktree 复制并自动注册：
 
 ```bash
-python /root/baai-internship/skills/flaggems-pr-submit-mthreads/scripts/prepare_kernel.sh <op> \
-  --repo-dir /root/FlagGems
+python /home/shuang/.claude/skills/flaggems-pr-submit-mthreads/scripts/prepare_kernel.sh <op> \
+  --repo-dir /home/shuang/FlagGems
 ```
 
 它会：从 worktree 复制 kernel → 确保 Apache License 文件头（无 KernelGen 首行）→ 在
@@ -244,8 +244,8 @@ python /root/baai-internship/skills/flaggems-pr-submit-mthreads/scripts/prepare_
 ### Phase 3: Automated Validation
 
 ```bash
-python /root/baai-internship/skills/flaggems-pr-submit-mthreads/scripts/check_operator.py <op> \
-  --repo-dir /root/FlagGems
+python /home/shuang/.claude/skills/flaggems-pr-submit-mthreads/scripts/check_operator.py <op> \
+  --repo-dir /home/shuang/FlagGems
 ```
 
 检查：kernel 存在 + Apache 文件头、logging、无 print、无重复函数、无未使用 import、`_mthreads/ops/__init__.py`
@@ -257,7 +257,7 @@ python /root/baai-internship/skills/flaggems-pr-submit-mthreads/scripts/check_op
 ### Phase 4: Pre-commit
 
 ```bash
-cd /root/FlagGems
+cd /home/shuang/FlagGems
 pre-commit run --files \
   src/flag_gems/runtime/backend/_mthreads/ops/<op>.py \
   src/flag_gems/runtime/backend/_mthreads/ops/__init__.py
@@ -268,8 +268,8 @@ pre-commit run --files \
 ### Phase 5: Commit & Push
 
 ```bash
-python /root/baai-internship/skills/flaggems-pr-submit-mthreads/scripts/commit_and_push.sh <op> \
-  --repo-dir /root/FlagGems
+python /home/shuang/.claude/skills/flaggems-pr-submit-mthreads/scripts/commit_and_push.sh <op> \
+  --repo-dir /home/shuang/FlagGems
 ```
 
 它会：验证 git author → 验证分支 `pr/mthreads-<op>` → stage **指定文件**（禁止 `git add -A`）→
@@ -285,8 +285,8 @@ push 到 fork。
 ### Phase 6: Create Upstream PR（MUST fill description）
 
 ```bash
-python /root/baai-internship/skills/flaggems-pr-submit-mthreads/scripts/create_pr.sh <op> \
-  --repo-dir /root/FlagGems
+python /home/shuang/.claude/skills/flaggems-pr-submit-mthreads/scripts/create_pr.sh <op> \
+  --repo-dir /home/shuang/FlagGems
 ```
 
 它用 `format_benchmark.py` 生成含加速比的英文 PR body 并 `gh pr create`。PR Description 模板：
@@ -330,7 +330,7 @@ Compared against the generic FlagGems implementation on Moore Threads (MUSA).
 ### Phase 7: Backfill PR Link（MUST DO）
 
 ```bash
-python /root/baai-internship/skills/flaggems-pr-submit-mthreads/scripts/operator_registry.py \
+python /home/shuang/.claude/skills/flaggems-pr-submit-mthreads/scripts/operator_registry.py \
   backfill <op> <pr_url>
 ```
 

@@ -23,7 +23,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-REPO_DIR="${REPO_DIR:-/root/FlagGems}"
+REPO_DIR="${REPO_DIR:-/home/shuang/FlagGems}"
 MTHREADS_OPS="${REPO_DIR}/src/flag_gems/runtime/backend/_mthreads/ops"
 WORKTREE_KERNEL="${REPO_DIR}/.worktrees/gen-${OP}/src/flag_gems/runtime/backend/_mthreads/ops/${OP}.py"
 TARGET_KERNEL="${MTHREADS_OPS}/${OP}.py"

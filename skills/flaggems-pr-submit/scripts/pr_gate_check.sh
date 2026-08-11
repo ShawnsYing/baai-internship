@@ -7,8 +7,8 @@
 # 2. check_operator.py 是否通过（检查 .pr_gate_passed 标记文件）
 # 3. 如果没通过，输出 JSON 阻止操作
 
-REPO_DIR="/root/FlagGems"
-SCRIPTS_DIR="/root/baai-internship/skills/flaggems-pr-submit/scripts"
+REPO_DIR="/home/shuang/FlagGems"
+SCRIPTS_DIR="/home/shuang/.claude/skills/flaggems-pr-submit/scripts"
 GATE_DIR="$REPO_DIR/.pr_gate"
 
 # 获取当前分支名

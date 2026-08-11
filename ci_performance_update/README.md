@@ -13,20 +13,20 @@ Write a timestamped confirmation list before each batch. The audit identifies:
 - PRs with any arithmetic mean speedup below the attention threshold
 
 ```bash
-python /root/baai-internship/ci_performance_update/audit_open_pr_h20_performance.py
+python /home/shuang/baai-internship/ci_performance_update/audit_open_pr_h20_performance.py
 ```
 
 Output goes to:
 
 ```text
-/root/baai-internship/ci_performance_update/reports/open_pr_ci_description_audit_<timestamp>.md
+/home/shuang/baai-internship/ci_performance_update/reports/open_pr_ci_description_audit_<timestamp>.md
 ```
 
 Use `--include-ok` when you also want the report to list PRs that are already
 formatted correctly:
 
 ```bash
-python /root/baai-internship/ci_performance_update/audit_open_pr_h20_performance.py --include-ok
+python /home/shuang/baai-internship/ci_performance_update/audit_open_pr_h20_performance.py --include-ok
 ```
 
 By default, `Needs Description Update` only includes PRs that still have H20
@@ -38,7 +38,7 @@ performance follow-up.
 To audit all formatting issues regardless of speedup, use:
 
 ```bash
-python /root/baai-internship/ci_performance_update/audit_open_pr_h20_performance.py \
+python /home/shuang/baai-internship/ci_performance_update/audit_open_pr_h20_performance.py \
   --update-policy format-cleanup
 ```
 
@@ -47,7 +47,7 @@ python /root/baai-internship/ci_performance_update/audit_open_pr_h20_performance
 Dry run first:
 
 ```bash
-python /root/baai-internship/ci_performance_update/update_pr_performance_from_ci.py \
+python /home/shuang/baai-internship/ci_performance_update/update_pr_performance_from_ci.py \
   --dry-run \
   --log-dir /path/to/ci_logs
 ```
@@ -56,14 +56,14 @@ Apply updates after confirmation. Actual edits are capped at 4 PRs per run by
 default:
 
 ```bash
-python /root/baai-internship/ci_performance_update/update_pr_performance_from_ci.py \
+python /home/shuang/baai-internship/ci_performance_update/update_pr_performance_from_ci.py \
   --log-dir /path/to/ci_logs
 ```
 
 For explicit PR/log mapping:
 
 ```bash
-python /root/baai-internship/ci_performance_update/update_pr_performance_from_ci.py \
+python /home/shuang/baai-internship/ci_performance_update/update_pr_performance_from_ci.py \
   --ci-log 1234=/path/to/pr_1234.log \
   --ci-log 1235=/path/to/pr_1235.log
 ```
@@ -77,5 +77,5 @@ section contains specialization rows such as `Tianshu / Iluvatar` or
 Each run writes one before/after audit file to:
 
 ```text
-/root/baai-internship/ci_performance_update/reports/ci_performance_update_<timestamp>.md
+/home/shuang/baai-internship/ci_performance_update/reports/ci_performance_update_<timestamp>.md
 ```

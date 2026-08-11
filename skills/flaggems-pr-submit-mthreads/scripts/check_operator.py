@@ -359,15 +359,15 @@ class OperatorChecker:
     def check_upstream(self):
         section("上游检查")
         # 通用算子必须存在上游
-        generic_ref = f"upstream/infra-ci:{GENERIC_OPS}/{self.op_name}.py"
+        generic_ref = f"upstream/master:{GENERIC_OPS}/{self.op_name}.py"
         if self._git_show(generic_ref):
             ok(f"通用算子存在上游: {GENERIC_OPS}/{self.op_name}.py")
         else:
-            self.warnings.append(f"通用算子 {GENERIC_OPS}/{self.op_name}.py 不在 upstream/infra-ci")
+            self.warnings.append(f"通用算子 {GENERIC_OPS}/{self.op_name}.py 不在 upstream/master")
             warn(f"通用算子未在上游找到（确认通用版已 merge，否则先提交通用版）")
 
         # 摩尔线程特化不能已存在上游
-        mth_ref = f"upstream/infra-ci:{MTHREADS_OPS}/{self.op_name}.py"
+        mth_ref = f"upstream/master:{MTHREADS_OPS}/{self.op_name}.py"
         if self._git_show(mth_ref):
             self.errors.append(f"摩尔线程特化已存在上游: {MTHREADS_OPS}/{self.op_name}.py")
             fail(f"上游已有摩尔线程特化 — 不应重复提交")
@@ -378,7 +378,7 @@ class OperatorChecker:
         section("单算子 PR 检查")
         try:
             out = subprocess.run(
-                ["git", "diff", "--name-only", "upstream/infra-ci...HEAD"],
+                ["git", "diff", "--name-only", "upstream/master...HEAD"],
                 cwd=self.repo_dir, capture_output=True, text=True, check=True,
             ).stdout
         except subprocess.CalledProcessError:
@@ -447,7 +447,7 @@ def main():
     parser.add_argument("operator", help="算子名称（如 celu, log, addmm）")
     parser.add_argument(
         "--repo-dir",
-        default=os.environ.get("FLAGGEMS_REPO", "/root/FlagGems"),
+        default=os.environ.get("FLAGGEMS_REPO", "/home/shuang/FlagGems"),
         help="FlagGems 仓库路径",
     )
     parser.add_argument("--list-files", action="store_true", help="仅输出涉及的文件列表")

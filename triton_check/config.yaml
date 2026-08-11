@@ -1,6 +1,6 @@
 # Triton 算子合规性检查配置
 
-flaggems_dir: /root/FlagGems
+flaggems_dir: /home/shuang/FlagGems
 
 # 扫描模式：
 #   single_worktree: 在一个 worktree 目录中扫描所有 ops（原始模式）
@@ -14,7 +14,7 @@ worktree: ""
 worktree_pattern: ".worktrees/gen-{op}"
 
 # 算子列表文件（仅检查列表中的算子，留空=扫描目录下所有）
-ops_list: "/root/baai-internship/auto_gen/ops_list.txt"
+ops_list: "/home/shuang/baai-internship/auto_gen/ops_list.txt"
 
 # 检查范围配置
 scan:

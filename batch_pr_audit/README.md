@@ -37,8 +37,8 @@ python3 batch_pr_audit.py --prs "#3900" --max-workers 2 --timeout 30
 
 | 配置项 | 默认值 | 说明 |
 |--------|--------|------|
-| `REPO` | `flagos-ai/FlagGems-Experimental` | 目标仓库 |
-| `SKILL_DIR` | `/root/baai-internship/skills/flaggems-pr-submit` | PR 提交 skill 路径 |
+| `REPO` | `flagos-ai/FlagGems` | 目标仓库 |
+| `SKILL_DIR` | `/home/shuang/.claude/skills/flaggems-pr-submit` | PR 提交 skill 路径 |
 | `MODEL` | `claude-opus-4-8` | Agent 使用的模型 |
 | `MAX_WORKERS` | `4` | 并行 worker 数 |
 | `TIMEOUT_MINUTES` | `25` | 每个 PR 的 agent 超时(分钟) |

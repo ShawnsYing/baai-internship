@@ -37,8 +37,11 @@ AI_ATTRIBUTION_RE = re.compile(
 )
 
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_REPO = "/root/FlagGems"
-FORK_REPO = "Yukun-Cui/FlagGems-Experimental"
+DEFAULT_REPO = "/home/shuang/FlagGems"
+FORK_REPO = "ShawnsYing/FlagGems"
+PUSH_REMOTE = "fork-shuang"
+UPSTREAM_REPO = "flagos-ai/FlagGems"
+PR_BASE = "master"
 
 # 当前正在提交的算子名（用于 fatal 中记录事件）
 _current_op = None
@@ -151,7 +154,7 @@ def get_changed_files(op_name, repo_dir):
             cwd=repo_dir, capture_output=True, text=True,
         )
         diff = subprocess.run(
-            ["git", "diff", "--name-only", "upstream/infra-ci...HEAD", "--", relpath],
+            ["git", "diff", "--name-only", f"upstream/{PR_BASE}...HEAD", "--", relpath],
             cwd=repo_dir, capture_output=True, text=True,
         )
         if status.stdout.strip() or diff.stdout.strip():
@@ -513,8 +516,8 @@ def main():
             fatal("最新 commit message 包含 AI 署名（Co-authored-by/Generated-by 等），CLA CI 会失败")
         ok("最新 commit message 不含 AI 署名")
 
-        ok("push 前 fetch 最新 upstream/infra-ci 并最终运行 check_operator.py (--strict)")
-        run(["git", "fetch", "upstream", "infra-ci"], cwd=repo, timeout=60)
+        ok(f"push 前 fetch 最新 upstream/{PR_BASE} 并最终运行 check_operator.py (--strict)")
+        run(["git", "fetch", "upstream", PR_BASE], cwd=repo, timeout=60)
         run(
             ["python", os.path.join(SCRIPTS_DIR, "check_operator.py"), op, "--repo-dir", repo, "--strict"],
             cwd=repo,
@@ -527,8 +530,8 @@ def main():
     if args.dry_run:
         print(f"  ⚠ DRY RUN — 跳过 push 到 {branch}")
     else:
-        run(["git", "push", "origin", f"HEAD:{branch}"], cwd=repo, timeout=60)
-        ok(f"已推送到 origin/{branch}")
+        run(["git", "push", PUSH_REMOTE, f"HEAD:{branch}"], cwd=repo, timeout=60)
+        ok(f"已推送到 {PUSH_REMOTE}/{branch}")
 
     # ── Step 8: create PR ──
     step(8, "创建上游 PR")
@@ -548,10 +551,10 @@ def main():
     else:
         result = run(
             [
-                "gh", "api", "repos/flagos-ai/FlagGems-Experimental/pulls",
+                "gh", "api", f"repos/{UPSTREAM_REPO}/pulls",
                 "-f", f"title={title}",
                 "-f", f"head={FORK_REPO.split('/')[0]}:{branch}",
-                "-f", "base=infra-ci",
+                "-f", f"base={PR_BASE}",
                 "-f", f"body={body}",
             ],
             env={"GH_TOKEN": token},

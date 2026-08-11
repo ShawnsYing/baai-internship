@@ -23,7 +23,7 @@ from typing import Iterable
 SKILL_SCRIPTS_DIR = Path(
     os.environ.get(
         "FLAGGEMS_SKILL_SCRIPTS_DIR",
-        "/root/baai-internship/skills/flaggems-pr-submit/scripts",
+        "/home/shuang/.claude/skills/flaggems-pr-submit/scripts",
     )
 ).resolve()
 sys.path.insert(0, str(SKILL_SCRIPTS_DIR))
@@ -32,10 +32,10 @@ from gen_pr_description import compute_operator_means, query_domestic_gpu
 from submit_operator import format_pr_body, get_op_id
 
 
-DEFAULT_REPO = "flagos-ai/FlagGems-Experimental"
-DEFAULT_AUTHOR = "Yukun-Cui"
-DEFAULT_REPO_DIR = "/root/FlagGems"
-DEFAULT_AUDIT_DIR = "/root/baai-internship/ci_performance_update/reports"
+DEFAULT_REPO = "flagos-ai/FlagGems"
+DEFAULT_AUTHOR = "ShawnsYing"
+DEFAULT_REPO_DIR = "/home/shuang/FlagGems"
+DEFAULT_AUDIT_DIR = "/home/shuang/baai-internship/ci_performance_update/reports"
 DEFAULT_MAX_UPDATES = 4
 
 SECTION_RE_TEMPLATE = r"(?ms)^## {heading}\n.*?(?=^## |\Z)"

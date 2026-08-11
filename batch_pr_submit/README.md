@@ -23,11 +23,11 @@ FlagGems 算子批量提 PR 工具。读取算子列表，为每个算子创建�
 
 ```bash
 MAX_PARALLEL=1                                                   # 并行数（每个 job 独占一块 GPU）
-OP_LIST="/root/baai-internship/batch_pr_submit/ops_list.txt"
-REPO_DIR="/root/FlagGems"                                        # 源仓库（并行期间不被修改）
-SCRIPTS_DIR="/root/baai-internship/skills/flaggems-pr-submit/scripts"
+OP_LIST="/home/shuang/baai-internship/batch_pr_submit/ops_list.txt"
+REPO_DIR="/home/shuang/FlagGems"                                        # 源仓库（并行期间不被修改）
+SCRIPTS_DIR="/home/shuang/.claude/skills/flaggems-pr-submit/scripts"
 GH_TOKEN="${GH_TOKEN:-}"                                         # 启动前 export
-LOG_DIR="/root/baai-internship/batch_pr_submit/logs"
+LOG_DIR="/home/shuang/baai-internship/batch_pr_submit/logs"
 WORKTREE_BASE_DIR="/tmp/flaggems_worktrees"                      # 每个算子的临时 worktree
 ```
 
@@ -55,7 +55,7 @@ Python 版（带 GPU 自动调度，`--ops-file` 必填）：
 ```bash
 export GH_TOKEN=<your_token>
 python3 batch_pr_submit.py --ops-file ops_list.txt \
-  --repo-dir /root/FlagGems --max-workers 4 --gpus auto
+  --repo-dir /home/shuang/FlagGems --max-workers 4 --gpus auto
 python3 batch_pr_submit.py --ops-file ops_list.txt --dry-run    # 预演
 ```
 
